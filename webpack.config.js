@@ -1,7 +1,6 @@
 var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin")
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 
 module.exports = function(env) {
@@ -17,7 +16,7 @@ module.exports = function(env) {
         externals: [
             'react',
             'react-dom',
-             'prop-types'
+            'prop-types'
         ],
         module: {
             rules: [

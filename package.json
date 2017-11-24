@@ -10,7 +10,7 @@
     "dev": "webpack --env=development || true",
     "build": "webpack --env=production -p --colors --progress"
   },
-  "author": "Serj Bulavyk",
+  "author": "Serj Bulavyk <serg.bulavyk@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
     "react": "^15.6.x",
