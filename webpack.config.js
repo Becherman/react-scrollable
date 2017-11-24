@@ -8,9 +8,9 @@ module.exports = function(env) {
         context: path.join(__dirname, 'src'),
         entry: './index',
         output: {
-            filename: 'react-scrollable.js',
+            filename: 'react-scrollx.js',
             path: path.join(__dirname, 'dist'),
-            library: 'ReactScrollable',
+            library: 'ReactScrollx',
             libraryTarget: 'umd'
         },
         externals: [

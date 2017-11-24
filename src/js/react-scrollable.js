@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from './utils';
 import ScrollBar from './scroll-bar';
 import ScrollThumb from './scroll-thumb';
-import '../css/react-scrollable.css';
+import '../css/react-scrollx.css';
 
-class ReactScrollable extends React.Component {
+class ReactScrollx extends React.Component {
 
     static propTypes = {
         width: PropTypes.oneOfType([
@@ -30,9 +30,9 @@ class ReactScrollable extends React.Component {
     static defaultProps = {
         appearOnHover: false,
         scrollBarVisible: true,
-        scrollBarClassName: 'react-scrollable__bar',
-        scrollThumbClassName: 'react-scrollable__thumb',
-        scrollContainerClassName: 'react-scrollable__wrapper'
+        scrollBarClassName: 'react-scrollx__bar',
+        scrollThumbClassName: 'react-scrollx__thumb',
+        scrollContainerClassName: 'react-scrollx__wrapper'
     }
 
     constructor(props) {
@@ -194,8 +194,8 @@ class ReactScrollable extends React.Component {
         const containerStyle = { width, height };
 
         const containerClassName = classNames({
-            'react-scrollable': true,
-            'react-scrollable--without-select': !userSelectPermission
+            'react-scrollx': true,
+            'react-scrollx--without-select': !userSelectPermission
         });
 
         const scrollBarClass = classNames({
@@ -225,7 +225,7 @@ class ReactScrollable extends React.Component {
                             setUserSelectPermission={this.setUserSelectPermission}
                         />
                     </ScrollBar>
-                        <div className="react-scrollable__outer-container">
+                        <div className="react-scrollx__outer-container">
                             <div
                                 onScroll={this.onScrollHandler}
                                 ref={div => this.content = div}
@@ -242,4 +242,4 @@ class ReactScrollable extends React.Component {
     }
 }
 
-export default ReactScrollable;
+export default ReactScrollx;

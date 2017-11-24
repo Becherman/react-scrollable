@@ -1,3 +1,3 @@
-import ReactScrollable from './js/react-scrollable';
+import ReactScrollx from './js/react-scrollx';
 
-export default ReactScrollable;
+export default ReactScrollx;

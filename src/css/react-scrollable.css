@@ -1,13 +1,13 @@
-.react-scrollable {
+.react-scrollx {
     position: relative;
     overflow: hidden;
 }
 
-.react-scrollable__outer-container {
+.react-scrollx__outer-container {
     overflow: hidden;
 }
 
-.react-scrollable__thumb {
+.react-scrollx__thumb {
     background-color: #8d8d8d;
     position: absolute;
     width: 7px;
@@ -18,7 +18,7 @@
     z-index: 1;
 }
 
-.react-scrollable__bar {
+.react-scrollx__bar {
     display: block;
     background-color: #efefef;
     height: 100%;
@@ -37,7 +37,7 @@
     transition: transform .1s linear .1s;
 }
 
-.react-scrollable--without-select {
+.react-scrollx--without-select {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

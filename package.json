@@ -1,9 +1,9 @@
 {
-  "name": "react-scrollable",
+  "name": "react-scrollx",
   "version": "0.1.0",
   "description": "Simple customizing scroll react component",
   "keywords": "react, scroll, scrolling, scrolls, custom-scroll",
-  "main": "dist/react-scrollable.js",
+  "main": "dist/react-scrollx.js",
   "homepage": "",
   "scripts": {
     "start": "webpack-dev-server --env=development",

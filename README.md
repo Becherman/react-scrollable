@@ -1,1 +1,1 @@
-# react-scrollable
+# react-scrollx
