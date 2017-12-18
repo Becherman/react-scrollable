@@ -35,5 +35,5 @@ import 'react-scrollx/dist/react-scrollx.css';
  - isRequired: true;
  - Set the width for your scroll container. can take a value in both pixels and in percentage. In case of percents value must be a String;
 ```html
-<ReactScrollx height={400} width="60%">
+<ReactScrollx height={400} width="60%"> //here example of percentage width
 ```
