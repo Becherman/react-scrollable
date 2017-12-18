@@ -50,7 +50,7 @@ module.exports = function(env) {
         },
 
         plugins: [
-            new ExtractTextPlugin('[name].css'),
+            new ExtractTextPlugin('react-scrollx.css'),
             new UglifyJsPlugin()
         ]
     }
