@@ -26,14 +26,56 @@ import 'react-scrollx/dist/react-scrollx.css';
 ## API Reference (options/callbacks)
 
 #### height 
- - Prop types: Number;
+ - Prop type: Number;
  - isRequired: true;
  - Set the height for your scroll container, takes a value in pixels;
 
 #### width
- - Prop types: Number | String; 
+ - Prop type: Number | String; 
  - isRequired: true;
- - Set the width for your scroll container. can take a value in both pixels and in percentage. In case of percents value must be a String;
+ - Set the width for your scroll container. Can take a value in both pixels and in percentage. In case of percents value must be a String;
 ```html
 <ReactScrollx height={400} width="60%"> //here example of percentage width
 ```
+#### scrollBarClassName
+ - Prop type: String; 
+ - isRequired: false;
+ - Set a custom CSS class for scroll bar;
+ 
+ #### scrollThumbClassName
+ - Prop type: String; 
+ - isRequired: false;
+ - Set a custom CSS class for scroll thumb;
+ 
+ #### scrollContainerClassName
+ - Prop type: String; 
+ - isRequired: false;
+ - Set a custom CSS class for scroll container;
+ 
+ #### appearOnHover
+ - Prop type: Boolean; 
+ - isRequired: false;
+ - By default the scroll is always visible, but setting this option to true 
+    will remove the scroll bar and will only show by mouse hover on scroll container;r;
+ 
+ #### scrollBarVisible
+ - Prop type: Boolean; 
+ - isRequired: false;
+ - Set visible status of scroll bar;
+ 
+ ### Callbacks
+ 
+ #### onTopPosition
+ - fire up when scroll thumb come his topmost position;
+ 
+ #### onBottomPosition
+ - fire up when scroll thumb come his bottommost position;
+ 
+ #### onScroll
+ - fire up everytime when user scrolls;
+ 
+ ## Author
+ Bulavyk Serj
+ 
+ ## License
+ This project is licensed under the MIT License
