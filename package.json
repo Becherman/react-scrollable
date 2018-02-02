@@ -1,6 +1,6 @@
 {
   "name": "react-scrollx",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple customizing scroll react component",
   "keywords": "react, scroll, scrolling, scrolls, custom-scroll",
   "main": "dist/react-scrollx.js",
@@ -10,6 +10,7 @@
     "dev": "webpack --env=development || true",
     "build": "webpack --env=production -p --colors --progress"
   },
+  "homepage": "https://github.com/Becherman/react-scrollx",
   "author": "Serj Bulavyk <serg.bulavyk@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
