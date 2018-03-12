@@ -1,13 +1,12 @@
 const classNames = function classNames(classObj) {
-    let resultString = [];
+  let resultString = [];
 
-    for(let key in classObj) {
-        if (classObj[key] === true) {
-            resultString = resultString.concat(key)
-        }
+  Object.keys(classObj).forEach(key => {
+    if (classObj[key] === true) {
+      resultString = resultString.concat(key);
     }
-
-    return resultString.join(' ');
-}
+  });
+  return resultString.join(' ');
+};
 
 export default classNames;

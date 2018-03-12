@@ -1,7 +1,5 @@
-var webpack = require('webpack');
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = env => ({
   entry: path.resolve(__dirname, 'public'),
@@ -16,7 +14,6 @@ module.exports = env => ({
   devtool: env.development ? 'source-map' : false,
 
   devServer: {
-    // contentBase: path.join(__dirname, 'dist'),
     compress: true,
     historyApiFallback: true,
     port: 3002
