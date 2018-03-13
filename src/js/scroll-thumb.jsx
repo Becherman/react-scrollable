@@ -1,13 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { number, string, func } from 'prop-types';
 
 class ScrollThumb extends React.Component {
   static propTypes = {
-    translateThumbY: PropTypes.number,
-    scrollThumbHeight: PropTypes.number,
-    scrollThumbClassName: PropTypes.string,
-    setUserSelectPermission: PropTypes.func,
-    setContentScrollTop: PropTypes.func,
+    translateThumbY: number.isRequired,
+    scrollThumbHeight: number.isRequired,
+    scrollThumbClassName: string,
+    setUserSelectPermission: func.isRequired,
+    setContentScrollTop: func.isRequired,
+  };
+
+  static defaultProps = {
+    scrollThumbClassName: '',
   };
 
   constructor() {
@@ -89,7 +93,6 @@ class ScrollThumb extends React.Component {
     return (
       <div
         className={scrollThumbClassName}
-        ref={div => (this.scrollThumb = div)}
         onMouseDown={this.mouseDownHandle}
         onTouchStart={this.onTouchStartHandle}
         style={{

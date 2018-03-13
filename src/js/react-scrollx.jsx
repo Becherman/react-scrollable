@@ -1,23 +1,37 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {
+  number,
+  string,
+  bool,
+  func,
+  element,
+  node,
+  oneOfType,
+} from 'prop-types';
 import classNames from './utils';
 import ScrollBar from './scroll-bar';
 import ScrollThumb from './scroll-thumb';
 import '../css/react-scrollx.css';
 
 class ReactScrollx extends React.Component {
+  static defaultProps = {
+    onTopPosition: undefined,
+    onBottomPosition: undefined,
+    onScroll: undefined,
+  };
+
   static propTypes = {
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    height: PropTypes.number.isRequired,
-    scrollBarClassName: PropTypes.string,
-    scrollThumbClassName: PropTypes.string,
-    scrollContainerClassName: PropTypes.string,
-    appearOnHover: PropTypes.bool,
-    scrollBarVisible: PropTypes.bool,
-    children: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
-    onTopPosition: PropTypes.func,
-    onBottomPosition: PropTypes.func,
-    onScroll: PropTypes.func,
+    width: oneOfType([string, number]).isRequired,
+    height: number.isRequired,
+    scrollBarClassName: string,
+    scrollThumbClassName: string,
+    scrollContainerClassName: string,
+    appearOnHover: bool,
+    scrollBarVisible: bool,
+    children: oneOfType([node, element]).isRequired,
+    onTopPosition: func,
+    onBottomPosition: func,
+    onScroll: func,
   };
 
   static defaultProps = {
@@ -28,12 +42,19 @@ class ReactScrollx extends React.Component {
     scrollContainerClassName: 'react-scrollx__wrapper',
   };
 
+  static getNativeScrollWidth(elem) {
+    return elem.clientWidth - elem.offsetWidth;
+  }
+
+  static setDefaultState(cb) {
+    cb();
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       scrollThumbHeight: 0,
-      translateThumbY: 0,
       userSelectPermission: true,
       contentScrollTop: 0,
       contentHeight: 0,
@@ -44,13 +65,23 @@ class ReactScrollx extends React.Component {
     };
   }
 
-  mouseOverHandler = () => {
-    this.setState({ isHover: true });
-  };
+  componentDidMount() {
+    const marginRight = this.getNativeScrollWidth(this.content);
+    const scrollThumbHeight = this.calculateScrollThumbHeight(
+      this.innerContainer,
+    );
+    const contentHeight = this.innerContainer.clientHeight;
+    const maxScrollTop = this.content.scrollHeight - this.props.height;
 
-  mouseOutHandler = () => {
-    this.setState({ isHover: false });
-  };
+    this.setDefaultState(() => {
+      this.setState({
+        contentHeight,
+        scrollThumbHeight,
+        marginRight,
+        maxScrollTop,
+      });
+    });
+  }
 
   onScrollHandler = () => {
     const { content, props } = this;
@@ -74,20 +105,52 @@ class ReactScrollx extends React.Component {
     }
   };
 
-  callOnScrollCallback(timestamp) {
-    const { scrollTimestamp } = this.state,
-      { onScroll } = this.props;
+  setUserSelectPermission = value => {
+    this.setState({ userSelectPermission: value });
+  };
 
-    if (timestamp - scrollTimestamp >= 200) {
-      onScroll();
-      this.setState({ scrollTimestamp: Date.now() });
-    }
+  setThumbTranslate() {
+    const { maxScrollTop, contentScrollTop } = this.state;
+    const thumbTrackSpace = this.getThumbTrackSpace();
+    const ratio = thumbTrackSpace / maxScrollTop;
+
+    return ratio * contentScrollTop;
   }
 
-  callOnTopCallback(value) {
-    const { onTopPosition } = this.props;
+  setContentScrollTop = value => {
+    const { height } = this.props;
+    const maxScrollTop = this.content.scrollHeight - height;
+    const thumbTrackSpace = this.getThumbTrackSpace();
+    const ratio = maxScrollTop / thumbTrackSpace;
 
-    if (value === 0) onTopPosition();
+    this.content.scrollTop = ratio * value;
+  };
+
+  getThumbTrackSpace() {
+    const { scrollThumbHeight } = this.state;
+    const { height } = this.props;
+
+    return height - scrollThumbHeight;
+  }
+
+  getScrollableStyles() {
+    const { marginRight } = this.state;
+    const { height } = this.props;
+
+    return {
+      height,
+      marginRight,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+    };
+  }
+
+  calculateScrollThumbHeight(elem) {
+    const containerHeight = this.props.height;
+    const childHeight = elem.clientHeight;
+    const viewableRatio = containerHeight / childHeight;
+    const scrollHeight = viewableRatio * containerHeight;
+    return Number(scrollHeight.toFixed());
   }
 
   callOnBottomCallback(value) {
@@ -96,60 +159,29 @@ class ReactScrollx extends React.Component {
     if (value === maxScrollTop) this.props.onBottomPosition();
   }
 
-  setUserSelectPermission = value => {
-    this.setState({ userSelectPermission: value });
+  callOnTopCallback(value) {
+    const { onTopPosition } = this.props;
+
+    if (value === 0) onTopPosition();
+  }
+
+  callOnScrollCallback(timestamp) {
+    const { scrollTimestamp } = this.state;
+    const { onScroll } = this.props;
+
+    if (timestamp - scrollTimestamp >= 200) {
+      onScroll();
+      this.setState({ scrollTimestamp: Date.now() });
+    }
+  }
+
+  mouseOutHandler = () => {
+    this.setState({ isHover: false });
   };
-
-  calculateScrollThumbHeight(element) {
-    const containerHeight = this.props.height,
-      childHeight = element.clientHeight,
-      viewableRatio = containerHeight / childHeight,
-      scrollHeight = viewableRatio * containerHeight;
-    return Number(scrollHeight.toFixed());
-  }
-
-  getNativeScrollWidth(element) {
-    return element.clientWidth - element.offsetWidth;
-  }
-
-  setThumbTranslate() {
-    const { maxScrollTop, contentScrollTop } = this.state,
-      thumbTrackSpace = this.getThumbTrackSpace(),
-      ratio = thumbTrackSpace / maxScrollTop;
-    return ratio * contentScrollTop;
-  }
-
-  setContentScrollTop = value => {
-    const { height } = this.props,
-      maxScrollTop = this.content.scrollHeight - height,
-      thumbTrackSpace = this.getThumbTrackSpace(),
-      ratio = maxScrollTop / thumbTrackSpace;
-
-    this.content.scrollTop = ratio * value;
-  };
-
-  getThumbTrackSpace() {
-    const { scrollThumbHeight } = this.state,
-      { height } = this.props;
-
-    return height - scrollThumbHeight;
-  }
-
-  getScrollableStyles() {
-    const { marginRight } = this.state,
-      { height } = this.props;
-
-    return {
-      height: height,
-      marginRight: marginRight,
-      overflowY: 'auto',
-      overflowX: 'hidden',
-    };
-  }
 
   isContentBiggerThenContainer() {
-    const { height } = this.props,
-      { contentHeight } = this.state;
+    const { height } = this.props;
+    const { contentHeight } = this.state;
 
     return contentHeight > height;
   }
@@ -159,20 +191,8 @@ class ReactScrollx extends React.Component {
 
     if (this.isContentBiggerThenContainer()) {
       return scrollBarVisible;
-    } else return false;
-  }
-
-  componentDidMount() {
-    const marginRight = this.getNativeScrollWidth(this.content),
-      scrollThumbHeight = this.calculateScrollThumbHeight(this.innerContainer),
-      contentHeight = this.innerContainer.clientHeight,
-      maxScrollTop = this.content.scrollHeight - this.props.height;
-    this.setState({
-      contentHeight,
-      scrollThumbHeight,
-      marginRight,
-      maxScrollTop,
-    });
+    }
+    return false;
   }
 
   render() {
@@ -203,10 +223,11 @@ class ReactScrollx extends React.Component {
         <div
           className={containerClassName}
           style={containerStyle}
-          ref={div => (this.container = div)}
           onWheel={this.onWheelHandler}
           onMouseOver={this.mouseOverHandler}
+          onFocus={this.mouseOverHandler}
           onMouseOut={this.mouseOutHandler}
+          onBlur={this.mouseOutHandler}
         >
           <ScrollBar scrollBarClassName={scrollBarClass}>
             <ScrollThumb
@@ -220,10 +241,16 @@ class ReactScrollx extends React.Component {
           <div className="react-scrollx__outer-container">
             <div
               onScroll={this.onScrollHandler}
-              ref={div => (this.content = div)}
+              ref={div => {
+                this.content = div;
+              }}
               style={this.getScrollableStyles()}
             >
-              <div ref={div => (this.innerContainer = div)}>
+              <div
+                ref={div => {
+                  this.innerContainer = div;
+                }}
+              >
                 {this.props.children}
               </div>
             </div>

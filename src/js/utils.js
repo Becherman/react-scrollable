@@ -1,3 +1,5 @@
+// @flow
+
 const classNames = function classNames(classObj) {
   let resultString = [];
 

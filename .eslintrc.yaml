@@ -9,13 +9,20 @@ parserOptions:
   ecmaFeatures:
     jsx: true
 plugins:
-  - react
-  - prettier
+  - flowtype
 extends:
   - airbnb
+  - plugin:flowtype/recommended
   - prettier
+  - prettier/flowtype
+  - prettier/react
+settings:
+  flowtype:
+    onlyFilesWithFlowAnnotation: true
 rules:
   no-console: 0
   import/no-extraneous-dependencies:
     - error
     - devDependencies: true
+  jsx-a11y/no-static-element-interactions: 0
+  flowtype/no-types-missing-file-annotation: 0
