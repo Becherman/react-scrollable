@@ -1,17 +1,14 @@
-import React from 'react';
-import { string, oneOfType, node, element } from 'prop-types';
+// @flow
 
-const ScrollBar = ({ scrollBarClassName, children }) => (
+import * as React from 'react';
+
+type Props = {
+  scrollBarClassName: string,
+  children: React.Node
+}
+
+const ScrollBar = ({ scrollBarClassName, children }: Props) => (
   <div className={scrollBarClassName}>{children}</div>
 );
-
-ScrollBar.defaultProps = {
-  scrollBarClassName: '',
-};
-
-ScrollBar.propTypes = {
-  scrollBarClassName: string,
-  children: oneOfType([node, element]).isRequired,
-};
 
 export default ScrollBar;

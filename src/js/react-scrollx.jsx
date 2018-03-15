@@ -1,38 +1,46 @@
-import React from 'react';
-import {
-  number,
-  string,
-  bool,
-  func,
-  element,
-  node,
-  oneOfType,
-} from 'prop-types';
+// @flow
+
+import * as React from 'react';
 import classNames from './utils';
 import ScrollBar from './scroll-bar';
 import ScrollThumb from './scroll-thumb';
 import '../css/react-scrollx.css';
 
-class ReactScrollx extends React.Component {
-  static defaultProps = {
-    onTopPosition: undefined,
-    onBottomPosition: undefined,
-    onScroll: undefined,
-  };
+const getNativeScrollWidth = (elem: HTMLDivElement): number =>
+  elem.clientWidth - elem.offsetWidth;
 
-  static propTypes = {
-    width: oneOfType([string, number]).isRequired,
-    height: number.isRequired,
-    scrollBarClassName: string,
-    scrollThumbClassName: string,
-    scrollContainerClassName: string,
-    appearOnHover: bool,
-    scrollBarVisible: bool,
-    children: oneOfType([node, element]).isRequired,
-    onTopPosition: func,
-    onBottomPosition: func,
-    onScroll: func,
-  };
+const setDefaultState = (cb: () => void): void => {
+  cb();
+};
+
+type Props = {
+  width: string | number,
+  height: number,
+  scrollBarClassName: string,
+  scrollThumbClassName: string,
+  scrollContainerClassName: string,
+  appearOnHover: boolean,
+  scrollBarVisible: ?boolean,
+  children?: React.Node,
+  onTopPosition: () => void,
+  onBottomPosition: () => void,
+  onScroll: () => void,
+};
+
+type State = {
+  scrollThumbHeight: number,
+  userSelectPermission: boolean,
+  contentScrollTop: number,
+  contentHeight: number,
+  marginRight: number,
+  maxScrollTop: number,
+  scrollTimestamp: number,
+  isHover: boolean,
+};
+
+class ReactScrollx extends React.Component<Props, State> {
+  content: any;
+  innerContainer: any;
 
   static defaultProps = {
     appearOnHover: false,
@@ -40,40 +48,36 @@ class ReactScrollx extends React.Component {
     scrollBarClassName: 'react-scrollx__bar',
     scrollThumbClassName: 'react-scrollx__thumb',
     scrollContainerClassName: 'react-scrollx__wrapper',
+    onTopPosition: undefined,
+    onBottomPosition: undefined,
+    onScroll: undefined,
   };
 
-  static getNativeScrollWidth(elem) {
-    return elem.clientWidth - elem.offsetWidth;
-  }
-
-  static setDefaultState(cb) {
-    cb();
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      scrollThumbHeight: 0,
-      userSelectPermission: true,
-      contentScrollTop: 0,
-      contentHeight: 0,
-      marginRight: 0,
-      maxScrollTop: 0,
-      isHover: false,
-      scrollTimestamp: 0,
-    };
-  }
+  state = {
+    scrollThumbHeight: 0,
+    userSelectPermission: false,
+    contentScrollTop: 0,
+    contentHeight: 0,
+    marginRight: 0,
+    maxScrollTop: 0,
+    scrollTimestamp: 0,
+    isHover: false,
+  };
 
   componentDidMount() {
-    const marginRight = this.getNativeScrollWidth(this.content);
-    const scrollThumbHeight = this.calculateScrollThumbHeight(
-      this.innerContainer,
-    );
-    const contentHeight = this.innerContainer.clientHeight;
+    let scrollThumbHeight: number;
+    let divHeight: number;
+
+    const marginRight: number = getNativeScrollWidth(this.content);
+    if (this.innerContainer) {
+      scrollThumbHeight = this.calculateScrollThumbHeight(this.innerContainer);
+      divHeight = this.innerContainer.clientHeight;
+    }
+
+    const contentHeight = divHeight;
     const maxScrollTop = this.content.scrollHeight - this.props.height;
 
-    this.setDefaultState(() => {
+    setDefaultState(() => {
       this.setState({
         contentHeight,
         scrollThumbHeight,
@@ -82,6 +86,14 @@ class ReactScrollx extends React.Component {
       });
     });
   }
+
+  mouseOverHandler = () => {
+    this.setState({ isHover: true });
+  };
+
+  mouseOutHandler = () => {
+    this.setState({ isHover: false });
+  };
 
   onScrollHandler = () => {
     const { content, props } = this;
@@ -105,7 +117,7 @@ class ReactScrollx extends React.Component {
     }
   };
 
-  setUserSelectPermission = value => {
+  setUserSelectPermission = (value: boolean): void => {
     this.setState({ userSelectPermission: value });
   };
 
@@ -117,7 +129,7 @@ class ReactScrollx extends React.Component {
     return ratio * contentScrollTop;
   }
 
-  setContentScrollTop = value => {
+  setContentScrollTop = (value: number): void => {
     const { height } = this.props;
     const maxScrollTop = this.content.scrollHeight - height;
     const thumbTrackSpace = this.getThumbTrackSpace();
@@ -145,7 +157,7 @@ class ReactScrollx extends React.Component {
     };
   }
 
-  calculateScrollThumbHeight(elem) {
+  calculateScrollThumbHeight(elem: HTMLDivElement) {
     const containerHeight = this.props.height;
     const childHeight = elem.clientHeight;
     const viewableRatio = containerHeight / childHeight;
@@ -153,19 +165,19 @@ class ReactScrollx extends React.Component {
     return Number(scrollHeight.toFixed());
   }
 
-  callOnBottomCallback(value) {
+  callOnBottomCallback(value: number) {
     const { maxScrollTop } = this.state;
 
     if (value === maxScrollTop) this.props.onBottomPosition();
   }
 
-  callOnTopCallback(value) {
+  callOnTopCallback(value: number) {
     const { onTopPosition } = this.props;
 
     if (value === 0) onTopPosition();
   }
 
-  callOnScrollCallback(timestamp) {
+  callOnScrollCallback(timestamp: number) {
     const { scrollTimestamp } = this.state;
     const { onScroll } = this.props;
 
@@ -212,7 +224,7 @@ class ReactScrollx extends React.Component {
       'react-scrollx--without-select': !userSelectPermission,
     });
 
-    const scrollBarClass = classNames({
+    const scrollBarClass: string = classNames({
       [scrollBarClassName]: true,
       'is-hide': !this.isScrollBarVisible(),
       'with-transform': !isHover && appearOnHover,
@@ -223,7 +235,6 @@ class ReactScrollx extends React.Component {
         <div
           className={containerClassName}
           style={containerStyle}
-          onWheel={this.onWheelHandler}
           onMouseOver={this.mouseOverHandler}
           onFocus={this.mouseOverHandler}
           onMouseOut={this.mouseOutHandler}

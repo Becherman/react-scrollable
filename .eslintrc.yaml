@@ -26,3 +26,4 @@ rules:
     - devDependencies: true
   jsx-a11y/no-static-element-interactions: 0
   flowtype/no-types-missing-file-annotation: 0
+  react/sort-comp: 0

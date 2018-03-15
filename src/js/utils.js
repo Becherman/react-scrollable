@@ -1,9 +1,13 @@
 // @flow
 
-const classNames = function classNames(classObj) {
-  let resultString = [];
+type PassedClassNames = {
+  [className: string]: boolean
+}
 
-  Object.keys(classObj).forEach(key => {
+const classNames = function classNames(classObj: PassedClassNames): string {
+  let resultString: string[] = [];
+
+  Object.keys(classObj).forEach((key: string) => {
     if (classObj[key] === true) {
       resultString = resultString.concat(key);
     }

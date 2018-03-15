@@ -1,15 +1,21 @@
-import React from 'react';
-import { number, string, func } from 'prop-types';
+// @flow
 
-class ScrollThumb extends React.Component {
-  static propTypes = {
-    translateThumbY: number.isRequired,
-    scrollThumbHeight: number.isRequired,
-    scrollThumbClassName: string,
-    setUserSelectPermission: func.isRequired,
-    setContentScrollTop: func.isRequired,
-  };
+import * as React from 'react';
 
+type Props = {
+  translateThumbY: number,
+  scrollThumbHeight: number,
+  scrollThumbClassName: string,
+  setUserSelectPermission: (perm: boolean) => void,
+  setContentScrollTop: (top: number) => void,
+};
+
+type State = {
+  lastPoint: number,
+  startPoint: ?number,
+};
+
+class ScrollThumb extends React.Component<Props, State> {
   static defaultProps = {
     scrollThumbClassName: '',
   };
@@ -19,13 +25,14 @@ class ScrollThumb extends React.Component {
 
     this.state = {
       lastPoint: 0,
+      startPoint: null,
     };
   }
 
-  onTouchStartHandle = e => {
-    e.stopPropagation();
+  onTouchStartHandle = (event: SyntheticTouchEvent<HTMLDivElement>) => {
+    event.stopPropagation();
     this.setState({
-      startPoint: e.touches[0].pageY,
+      startPoint: event.touches[0].pageY,
       lastPoint: this.props.translateThumbY,
     });
 
@@ -33,11 +40,13 @@ class ScrollThumb extends React.Component {
     document.addEventListener('touchend', this.onTouchEndHandle);
   };
 
-  onTouchMoveHandle = e => {
+  onTouchMoveHandle = (event: TouchEvent) => {
     const { startPoint, lastPoint } = this.state;
     const { setContentScrollTop } = this.props;
 
-    setContentScrollTop(e.touches[0].pageY - startPoint + lastPoint);
+    if (startPoint != null) {
+      setContentScrollTop(event.touches[0].pageY - startPoint + lastPoint);
+    }
   };
 
   onTouchEndHandle = () => {
@@ -51,12 +60,12 @@ class ScrollThumb extends React.Component {
     document.removeEventListener('touchend', this.onTouchEndHandle);
   };
 
-  mouseDownHandle = e => {
-    e.stopPropagation();
+  mouseDownHandle = (event: SyntheticMouseEvent<HTMLDivElement>): void => {
+    event.stopPropagation();
     const { translateThumbY, setUserSelectPermission } = this.props;
 
     this.setState({
-      startPoint: e.pageY,
+      startPoint: event.pageY,
       lastPoint: translateThumbY,
     });
 
@@ -66,11 +75,13 @@ class ScrollThumb extends React.Component {
     document.addEventListener('mouseup', this.mouseUpHandle);
   };
 
-  moveHandle = e => {
+  moveHandle = (event: MouseEvent) => {
     const { startPoint, lastPoint } = this.state;
     const { setContentScrollTop } = this.props;
 
-    setContentScrollTop(e.pageY - startPoint + lastPoint);
+    if (startPoint != null) {
+      setContentScrollTop(event.pageY - startPoint + lastPoint);
+    }
   };
 
   mouseUpHandle = () => {
